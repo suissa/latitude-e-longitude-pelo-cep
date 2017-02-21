@@ -57,53 +57,55 @@ $(document).ready(function () {
             }
         });
     }
+
+    //FUNÇÃO RENDERIZA MAP NA TELA
+    function localAtual(result) {
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 17
+        });
+        var infoWindow = new google.maps.InfoWindow({ map: map });
+
+        //HTML5 geolocation.
+        if (navigator.geolocation) {
+
+            navigator.geolocation.getCurrentPosition(function (position) {
+
+                var latitude = result == undefined ? position.coords.latitude : result.results[0].geometry.location.lat;
+                var longitude = result == undefined ? position.coords.longitude : result.results[0].geometry.location.lng;
+
+                var pos = {
+                    lat: latitude,
+                    lng: longitude
+                };
+
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(pos.lat, pos.lng),
+                    title: "Seu Titulo",
+                    map: map
+                });
+
+                //infoWindow.setPosition(pos);
+                //infoWindow.setContent('Sua Localização!');
+
+                map.setCenter(pos);
+
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+    }
+
+    //CASO ERRO EXIBE MENSAGEM CENTRO TELA
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: Falha ao carregar mapa.' :
+            'Error: Sem suporte ao Maps.');
+    }
 });
 
-//FUNÇÃO RENDERIZA MAP NA TELA
-function localAtual(result) {
 
-    var map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 17
-    });
-    var infoWindow = new google.maps.InfoWindow({ map: map });
-
-    //HTML5 geolocation.
-    if (navigator.geolocation) {
-
-        navigator.geolocation.getCurrentPosition(function (position) {
-
-            var latitude = result == undefined ? position.coords.latitude : result.results[0].geometry.location.lat;
-            var longitude = result == undefined ? position.coords.longitude : result.results[0].geometry.location.lng;
-
-            var pos = {
-                lat: latitude,
-                lng: longitude
-            };
-
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(pos.lat, pos.lng),
-                title: "Seu Titulo",
-                map: map
-            });
-
-            //infoWindow.setPosition(pos);
-            //infoWindow.setContent('Sua Localização!');
-
-            map.setCenter(pos);
-
-        }, function () {
-            handleLocationError(true, infoWindow, map.getCenter());
-        });
-    } else {
-        handleLocationError(false, infoWindow, map.getCenter());
-    }
-}
-
-//CASO ERRO EXIBE MENSAGEM CENTRO TELA
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: Falha ao carregar mapa.' :
-        'Error: Sem suporte ao Maps.');
-}
