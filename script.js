@@ -6,12 +6,12 @@ $(document).ready(function () {
 
     var Endereco = {};
 
-    $("#e").click(function () {
+    $("#e").on('click', function () {
         $("#num").prop("disabled", true);
         $("#cep").prop("disabled", true);
     });
 
-    $("#d").click(function () {
+    $("#d").on('click', function () {
         $("#num").prop("disabled", false);
         $("#cep").prop("disabled", false);
     });
@@ -19,14 +19,13 @@ $(document).ready(function () {
     //FUNCAO VERIFICA TIPO DE PESQUISA, SE CEP CONSULTA API VIA CEP E ENVIA VALOR PARA FUNÇAO VALORMAP()
     $('#buscar').click(function () {
 
-        if ($("#num").prop("disabled") == true) {
-            localAtual();
-        } else {
+        if ($("#num").prop("disabled")) {
+            return localAtual();
             var cep = $('#cep').val();
             var num = $('#num').val();
 
-            if (cep && num) {
-                $.ajax({
+            if (cep && num) 
+                return $.ajax({
                     url: 'https://viacep.com.br/ws/' + cep + '/json/', success: function (result) {
                         Endereco = {
                             rua: result.logradouro,
@@ -38,10 +37,8 @@ $(document).ready(function () {
                         valorMap(Endereco);
                     }
                 });
-            } else {
-                alert("Campos e obrigatorio!");
-            }
-        };
+                
+              return alert("Campos e obrigatorio!");
     });
 
     //FUNCAO RECUPERA LATITUDE E LONGITUDE PELO ENDEREÇO
